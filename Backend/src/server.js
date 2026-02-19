@@ -24,32 +24,34 @@ dotenv.config();
 const app = express();
 
 const PORT = Number(process.env.PORT || 5000);
-const FRONTEND_ORIGINS = (process.env.FRONTEND_ORIGIN || "http://localhost:8080,http://localhost:5173")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
 const ALLOW_START_WITHOUT_DB =
   (process.env.ALLOW_START_WITHOUT_DB || "false").toLowerCase() === "true";
-// MongoDB Atlas connection
-// MONGO_URI must be set in your .env file (e.g., mongodb+srv://...)
-const MONGO_URI = process.env.MONGO_URI;
 
-if (!MONGO_URI) {
-  console.error("ERROR: MONGO_URI is not set in your .env file. Please configure your MongoDB Atlas connection string.");
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("ERROR: SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in Backend/.env");
   process.exit(1);
 }
 
-console.log(`[DEBUG] MONGO_URI being used: ${MONGO_URI.replace(/\/\/([^:]+):([^@]+)@/, '//****:****@')}`);
 let isDatabaseReady = false;
 
 app.use(
   cors({
-    origin: "*", // Temporarily allow all origins for debugging
+    origin: "*",
     credentials: false,
   })
 );
 app.use(express.json());
 app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
+
+app.get("/", (_req, res) => {
+  res.json({
+    message: "Jukwaa backend is running.",
+    docs: {
+      health: "/api/health",
+      news: "/api/news?limit=1",
+    },
+  });
+});
 
 app.get("/api/health", (_req, res) => {
   res.json({ data: { status: "ok", database: isDatabaseReady ? "connected" : "disconnected" } });
@@ -62,7 +64,7 @@ app.use("/api", (req, res, next) => {
 
   return res.status(503).json({
     message:
-      "Database is currently unavailable. Check MongoDB Atlas connection and retry. Set ALLOW_START_WITHOUT_DB=false to fail fast on startup.",
+      "Database is currently unavailable. Check Supabase configuration and retry. Set ALLOW_START_WITHOUT_DB=false to fail fast on startup.",
   });
 });
 
@@ -93,7 +95,7 @@ app.use((error, _req, res, _next) => {
 
 async function start() {
   try {
-    await connectDatabase(MONGO_URI);
+    await connectDatabase();
     isDatabaseReady = true;
     await seedTeamMembersIfEmpty();
     await seedVideosIfEmpty();
@@ -102,7 +104,7 @@ async function start() {
     if (!ALLOW_START_WITHOUT_DB) {
       throw error;
     }
-    console.warn("MongoDB unavailable. Starting API in degraded mode (DB endpoints return 503).");
+    console.warn("Supabase unavailable. Starting API in degraded mode (DB endpoints return 503).");
     console.warn(error.message || error);
   }
 
