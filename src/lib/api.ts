@@ -138,10 +138,20 @@ type ApiResponse<T> = {
   message?: string;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const isDev = import.meta.env.DEV;
+
+// In production, require explicit API URL to avoid silent "/api" calls
+// being rewritten by Netlify SPA routing.
+if (!isDev && !configuredApiBaseUrl) {
+  throw new Error(
+    "Missing VITE_API_BASE_URL in production. Set it in Netlify environment variables."
+  );
+}
+
+const API_BASE_URL = configuredApiBaseUrl || "/api";
 
 // Debug logging in development
-const isDev = import.meta.env.DEV;
 
 function debugLog(...args: unknown[]) {
   if (isDev) {

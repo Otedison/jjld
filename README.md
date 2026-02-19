@@ -1,75 +1,91 @@
-# Welcome to your Lovable project
+# Jukwaa La Demokrasia
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Jukwaa La Demokrasia (JLD) is a non-partisan civic education platform dedicated to empowering citizens, strengthening democracy, and transforming Kenya through civic education and leadership development across all 47 counties.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- Civic education resources
+- Leadership development programs
+- News and updates on democratic processes
+- Event management and registration
+- Team and gallery sections
+- Subscription-based resource access
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS, shadcn-ui
+- **Backend**: Node.js, Express, Supabase Postgres
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js & npm installed
+- Supabase project (for backend database)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install frontend dependencies
+npm install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Install backend dependencies
+cd Backend
+npm install
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Environment Variables
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Frontend (`.env`):
+
+```sh
+VITE_API_BASE_URL=http://localhost:5000/api
+```
+
+Backend (`Backend/.env`):
+
+```sh
+SUPABASE_URL=https://YOUR-PROJECT-REF.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=YOUR_SUPABASE_SERVICE_ROLE_KEY
+PORT=5000
+FRONTEND_ORIGIN=http://localhost:8080,http://localhost:5173
+BACKEND_PUBLIC_URL=http://localhost:5000
+ALLOW_START_WITHOUT_DB=false
+ADMIN_EMAIL=admin@jukwaa.local
+ADMIN_PASSWORD=admin123
+ADMIN_NAME=Primary Admin
+JWT_SECRET=replace_with_a_strong_random_secret
+```
+
+### Running Locally
+
+```sh
+# Start frontend development server
+npm run dev
+
+# Start backend server
+cd Backend
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Netlify Frontend + Supabase Backend (Recommended)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+This frontend should connect to your deployed backend API, and the backend connects to Supabase using the service role key.
 
-**Use GitHub Codespaces**
+1. Deploy backend (Render, Railway, Fly.io, etc.).
+2. Set backend env vars:
+   - `SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `FRONTEND_ORIGIN=https://YOUR_NETLIFY_SITE.netlify.app`
+   - `BACKEND_PUBLIC_URL=https://YOUR_BACKEND_DOMAIN`
+3. In Netlify site environment variables, set:
+   - `VITE_API_BASE_URL=https://YOUR_BACKEND_DOMAIN/api`
+4. Deploy frontend on Netlify (build command `npm run build`, publish directory `dist`).
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Do not place `SUPABASE_SERVICE_ROLE_KEY` in Netlify frontend variables.
 
-## What technologies are used for this project?
+## License
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-# jld
-# jld
+MIT
